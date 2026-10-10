@@ -197,7 +197,7 @@
   var N = PHOTOS.length;
   var SPEED = 46;     /* px per second while drifting */
   var DWELL = 1000;   /* ms to hold a photo at the centre */
-  var IDLE = 2000;    /* ms after manual scrolling before drifting resumes */
+  var IDLE = 1500;    /* ms after manual scrolling before drifting resumes */
 
   var reel = document.getElementById('reel');
   var list = document.getElementById('list');
@@ -268,7 +268,7 @@
     lastT = now;
     var vh = reel.clientHeight, sy = reel.scrollTop, y = sy, i, j;
     var manual = touching || (now - lastInput < IDLE);
-    var auto = !manual && !reduce && !document.hidden && now >= dwellUntil;
+    var auto = !manual && !document.hidden && now >= dwellUntil;
     if (auto) { if (!autoWas) { pos = sy; } pos += SPEED * dt; y = pos; }
     autoWas = auto;
 
