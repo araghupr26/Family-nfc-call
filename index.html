@@ -197,7 +197,7 @@
   var N = PHOTOS.length;
   var SPEED = 46;     /* px per second while drifting */
   var DWELL = 1000;   /* ms to hold a photo at the centre */
-  var IDLE = 1500;    /* ms after manual scrolling before drifting resumes */
+  var IDLE = 2000;    /* ms after manual scrolling before drifting resumes */
 
   var reel = document.getElementById('reel');
   var list = document.getElementById('list');
@@ -267,6 +267,7 @@
     var dt = lastT ? Math.min(0.05, (now - lastT) / 1000) : 0;
     lastT = now;
     var vh = reel.clientHeight, sy = reel.scrollTop, y = sy, i, j;
+    if (touching && now - lastInput > 6000) { touching = false; }
     var manual = touching || (now - lastInput < IDLE);
     var auto = !manual && !document.hidden && now >= dwellUntil;
     if (auto) { if (!autoWas) { pos = sy; } pos += SPEED * dt; y = pos; }
@@ -320,6 +321,8 @@
   reel.addEventListener('touchmove', touch, { passive: true });
   reel.addEventListener('touchend', function () { touching = false; touch(); }, { passive: true });
   reel.addEventListener('touchcancel', function () { touching = false; touch(); }, { passive: true });
+  ['pointerup','pointercancel','mouseup'].forEach(function (n) { window.addEventListener(n, function () { touching = false; touch(); }, { passive: true }); });
+  document.addEventListener('visibilitychange', function () { touching = false; lastInput = -1e9; });
   reel.addEventListener('scroll', function () {
     if (lastSet !== null && Math.abs(reel.scrollTop - lastSet) <= 1.5) { return; }
     touch();
